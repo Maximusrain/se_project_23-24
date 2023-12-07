@@ -1,0 +1,16 @@
+services:
+    db-disease:
+        image: mariadb:10.4
+        ports:
+            - "3307:3306"
+        volumes:
+            - db-disease-data:/var/lib/mysql
+        environment:
+            - MYSQL_RANDOM_ROOT_PASSWORD=true
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+            - MYSQL_DATABASE=project
+
+volumes:
+    db-disease-data:
+        driver: local
