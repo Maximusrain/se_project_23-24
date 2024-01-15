@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -51,6 +50,9 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        self.login.clicked.connect(self.go_to_login)  # Added line for onclick listener
+        self.signup.clicked.connect(self.go_to_signup)  # Added line for onclick listener
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -58,3 +60,11 @@ class Ui_Dialog(object):
         self.label_2.setText(_translate("Dialog", "Disease Symptom Prediction"))
         self.login.setText(_translate("Dialog", "Log In"))
         self.signup.setText(_translate("Dialog", "Sign Up"))
+
+    def go_to_login(self):
+        # Code to switch to the login page goes here
+        pass
+
+    def go_to_signup(self):
+        # Code to switch to the signup page goes here
+        pass

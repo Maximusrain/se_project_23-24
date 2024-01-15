@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -75,6 +74,8 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        self.create_btn.clicked.connect(self.signup_function)  # Added line for onclick listener
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -84,3 +85,17 @@ class Ui_Dialog(object):
         self.label_3.setText(_translate("Dialog", "Email"))
         self.label_4.setText(_translate("Dialog", "Password"))
         self.label_5.setText(_translate("Dialog", "Confirm password"))
+
+    def signup_function(self):
+        user = self.Email_line.text()
+        password = self.Password_line.text()
+        confirm_password = self.Password_confirm.text()
+
+        if len(user) == 0 or len(password) == 0 or len(confirm_password) == 0:
+            self.label_invalid_line.setText("Please input all fields.")
+        else:
+            if password == confirm_password:
+                # Connect with the database or perform signup actions
+                self.label_invalid_line.setText("Signup successful!")
+            else:
+                self.label_invalid_line.setText("Passwords do not match.")

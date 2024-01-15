@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -66,6 +65,9 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        # Connect the login button to the go_to_login method
+        self.login_btn.clicked.connect(self.go_to_login)
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -74,3 +76,13 @@ class Ui_Dialog(object):
         self.login_btn.setText(_translate("Dialog", "Log In"))
         self.label_3.setText(_translate("Dialog", "Email"))
         self.label_4.setText(_translate("Dialog", "Password"))
+
+    #def go_to_login(self):
+        # Add your login logic here
+        #user = self.EmailLine.text()
+        #password = self.PasswordLine.text()
+
+        #if len(user) == 0 or len(password) == 0:
+            #self.label_invalid_line.setText("Please input fields.")
+        #else:
+            #print("Connect with database or perform login logic")*/
