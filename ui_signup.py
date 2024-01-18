@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -20,82 +21,78 @@ class Ui_Dialog(object):
 "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(46, 117, 100, 255), stop:1 rgba(102, 221, 190, 255))}")
         self.WelcomeWidget.setObjectName("WelcomeWidget")
         self.label = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label.setGeometry(QtCore.QRect(300, 100, 211, 101))
-        self.label.setStyleSheet("font: 36pt \"Tahoma\";\n"
+        self.label.setGeometry(QtCore.QRect(300, 30, 211, 101))
+        self.label.setStyleSheet("font: 36pt \"Century Gothic\";\n"
 "color: rgb(229, 232, 236);\n"
 "")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label_2.setGeometry(QtCore.QRect(280, 200, 251, 41))
-        self.label_2.setStyleSheet("font: 15pt \"MS Shell Dlg 2\";\n"
+        self.label_2.setGeometry(QtCore.QRect(280, 130, 251, 41))
+        self.label_2.setStyleSheet("font: 15pt \"Century Gothic\";\n"
 "color: rgb(229, 232, 236);")
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
         self.create_btn = QtWidgets.QPushButton(self.WelcomeWidget)
-        self.create_btn.setGeometry(QtCore.QRect(300, 530, 231, 41))
-        self.create_btn.setStyleSheet("border-radius:20px;\n"
+        self.create_btn.setGeometry(QtCore.QRect(290, 450, 231, 41))
+        self.create_btn.setStyleSheet("border-radius:10px;\n"
 "background-color: rgb(229, 232, 236);\n"
 "\n"
-"font: 14pt \"Tahoma\";\n"
+"font: 14pt \"Century Gothic\";\n"
 "")
         self.create_btn.setObjectName("create_btn")
         self.Email_line = QtWidgets.QLineEdit(self.WelcomeWidget)
-        self.Email_line.setGeometry(QtCore.QRect(300, 280, 231, 41))
+        self.Email_line.setGeometry(QtCore.QRect(270, 210, 271, 41))
         self.Email_line.setStyleSheet("background-color:rgba(0,0,0,0);\n"
 "font: 12pt \"MS Shell Dlg 2\";")
         self.Email_line.setObjectName("Email_line")
         self.Password_line = QtWidgets.QLineEdit(self.WelcomeWidget)
-        self.Password_line.setGeometry(QtCore.QRect(300, 360, 231, 41))
+        self.Password_line.setGeometry(QtCore.QRect(270, 290, 271, 41))
         self.Password_line.setStyleSheet("background-color:rgba(0,0,0,0);\n"
 "font: 12pt \"MS Shell Dlg 2\";")
         self.Password_line.setObjectName("Password_line")
         self.Password_confirm = QtWidgets.QLineEdit(self.WelcomeWidget)
-        self.Password_confirm.setGeometry(QtCore.QRect(300, 440, 231, 41))
+        self.Password_confirm.setGeometry(QtCore.QRect(270, 370, 271, 41))
         self.Password_confirm.setStyleSheet("background-color:rgba(0,0,0,0);\n"
 "font: 12pt \"MS Shell Dlg 2\";")
         self.Password_confirm.setObjectName("Password_confirm")
         self.label_3 = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label_3.setGeometry(QtCore.QRect(300, 250, 71, 31))
-        self.label_3.setStyleSheet("font: 10pt \"Dubai\";")
+        self.label_3.setGeometry(QtCore.QRect(270, 180, 71, 31))
+        self.label_3.setStyleSheet("font: 11pt \"Century Gothic\";")
         self.label_3.setObjectName("label_3")
         self.label_4 = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label_4.setGeometry(QtCore.QRect(300, 330, 71, 31))
-        self.label_4.setStyleSheet("font: 10pt \"Dubai\";")
+        self.label_4.setGeometry(QtCore.QRect(270, 260, 111, 31))
+        self.label_4.setStyleSheet("font: 11pt \"Century Gothic\";")
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label_5.setGeometry(QtCore.QRect(300, 410, 131, 31))
-        self.label_5.setStyleSheet("font: 10pt \"Dubai\";")
+        self.label_5.setGeometry(QtCore.QRect(270, 340, 151, 31))
+        self.label_5.setStyleSheet("font: 11pt \"Century Gothic\";")
         self.label_5.setObjectName("label_5")
         self.label_invalid_line = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label_invalid_line.setGeometry(QtCore.QRect(300, 490, 221, 21))
-        self.label_invalid_line.setStyleSheet("font: 10pt \"MS Shell Dlg 2\"; color:red;")
+        self.label_invalid_line.setGeometry(QtCore.QRect(290, 420, 231, 21))
+        self.label_invalid_line.setStyleSheet("font: 14pt \"Century Gothic\"; color:red;")
         self.label_invalid_line.setText("")
+        self.label_invalid_line.setAlignment(QtCore.Qt.AlignCenter)
         self.label_invalid_line.setObjectName("label_invalid_line")
+        self.goback_btn = QtWidgets.QPushButton(self.WelcomeWidget)
+        self.goback_btn.setGeometry(QtCore.QRect(290, 510, 231, 41))
+        self.goback_btn.setStyleSheet("border-radius:10px;\n"
+"background-color: rgb(229, 232, 236);\n"
+"\n"
+"font: 14pt \"Century Gothic\";\n"
+"")
+        self.goback_btn.setObjectName("goback_btn")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-        self.create_btn.clicked.connect(self.signup_function)  # Added line for onclick listener
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label.setText(_translate("Dialog", "Sign Up"))
         self.label_2.setText(_translate("Dialog", "Create a new account "))
-        self.create_btn.setText(_translate("Dialog", "Create"))
+        self.create_btn.setText(_translate("Dialog", "Sign up"))
         self.label_3.setText(_translate("Dialog", "Email"))
         self.label_4.setText(_translate("Dialog", "Password"))
         self.label_5.setText(_translate("Dialog", "Confirm password"))
-
-    def signup_function(self):
-        user = self.Email_line.text()
-        password = self.Password_line.text()
-        confirm_password = self.Password_confirm.text()
-
-        if len(user) == 0 or len(password) == 0 or len(confirm_password) == 0:
-            self.label_invalid_line.setText("Please input all fields.")
-        else:
-            if password == confirm_password:
-                # Connect with the database or perform signup actions
-                self.label_invalid_line.setText("Signup successful!")
-            else:
-                self.label_invalid_line.setText("Passwords do not match.")
+        self.goback_btn.setText(_translate("Dialog", "Go back"))
