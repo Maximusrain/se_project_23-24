@@ -2,8 +2,8 @@ import bcrypt
 import pymysql
 
 class DatabaseManager:
-    def __init__(self, host='your_database_host', user='your_database_user',
-                 password='your_database_password', database='your_database_name'):
+    def __init__(self, host='localhost', user='root',
+                 password='', database='disease_prediction'):
         self.host = host
         self.user = user
         self.password = password
@@ -21,24 +21,34 @@ class DatabaseManager:
             cursor = conn.cursor()
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS user (
-                    UserID INT NOT NULL,
+                    UserID INT AUTO_INCREMENT NOT NULL,
                     UserPassword VARCHAR(100) NOT NULL,
                     Email VARCHAR(255) NOT NULL,
                     PRIMARY KEY (UserID),
                     UNIQUE KEY Email (Email)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
             ''')
             conn.commit()
 
     def register_user(self, email, password):
-        # Hash the password using bcrypt
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        try:
+            # Hash the password using bcrypt
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        # Insert the user data into the database
-        with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
-            cursor = conn.cursor()
-            cursor.execute('INSERT INTO user (UserPassword, Email) VALUES (%s, %s)', (hashed_password, email))
-            conn.commit()
+            # Insert the user data into the database
+            with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+                cursor = conn.cursor()
+                cursor.execute('INSERT INTO user (UserPassword, Email) VALUES (%s, %s)', (hashed_password, email))
+                conn.commit()
+
+            print(f"User registered successfully. User: {email}")
+        except pymysql.Error as e:
+            print(f"Database error during registration: {str(e)}")
+            raise pymysql.Error(f"Database error during registration: {str(e)}")
+        except Exception as e:
+            print(f"Error during registration: {str(e)}")
+            raise Exception(f"Error during registration: {str(e)}")
 
     def check_user_credentials(self, email, password):
         # Retrieve hashed password from the database based on email
