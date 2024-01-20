@@ -1,12 +1,15 @@
+import csv
 import re
 import sys
 
 import bcrypt
+from PyQt5.QtGui import QFont
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QPushButton, QStackedWidget, QMessageBox
-
+from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QPushButton, QStackedWidget, QMessageBox, \
+    QMainWindow, QVBoxLayout, QCheckBox
 from DatabaseManager import DatabaseManager
+from ui_main_window import Ui_MainWindow
 
 
 class WelcomePage(QDialog):
@@ -50,31 +53,49 @@ class LoginPage(QDialog):
         self.login_btn.clicked.connect(self.loginfunction)
         self.goback_btn.clicked.connect(self.go_back)
 
+    # Inside the loginfunction of LoginPage
     def loginfunction(self):
-        user = self.EmailLine.text()
-        password = self.PasswordLine.text()
+        try:
+            user = self.EmailLine.text()
+            password = self.PasswordLine.text()
 
-        if len(user) == 0 or len(password) == 0:
-            self.label_invalid_line.setText("Please input fields.")
-        elif not is_valid_email(user):
-            self.label_invalid_line.setText("Invalid email address.")
-        else:
-            self.label_invalid_line.setText("")
-            print("connect with database")
+            if len(user) == 0 or len(password) == 0:
+                self.label_invalid_line.setText("Please input fields.")
+            elif not is_valid_email(user):
+                self.label_invalid_line.setText("Invalid email address.")
+            else:
+                db_manager = DatabaseManager()
+                if db_manager.check_user_credentials(user, password):
+                    self.label_invalid_line.setText("Login successful.")
+                    print(f"Login successful. User: {user}")
+
+                    # Access the main window's central widget and switch content
+                    main_window = MainWindow(self.widget)  # Instantiate your MainWindow class
+                    self.widget.addWidget(main_window)
+
+                    # Ensure the index is correct for MainWindow
+                    main_window_index = self.widget.indexOf(main_window)
+                    self.widget.setCurrentIndex(main_window_index)
+
+                    # Close or hide the login page
+                    self.accept()  # This will close the dialog
+                else:
+                    self.label_invalid_line.setText("Invalid email or password.")
+                    print("Invalid email or password.")
+        except Exception as e:
+            print(f"Error during login: {str(e)}")
 
     def go_back(self):
         # Clear all the input fields
         self.EmailLine.clear()
         self.PasswordLine.clear()
         self.label_invalid_line.clear()
-
         # Set the current index to go back
         self.widget.setCurrentIndex(self.widget.currentIndex() - 1)
 
 
 class SignupPage(QDialog):
     def __init__(self, widget):
-        self.db_manager = DatabaseManager()
         super(SignupPage, self).__init__()
         loadUi("signup.ui", self)
         self.widget = widget
@@ -94,9 +115,9 @@ class SignupPage(QDialog):
         elif password != password_con:
             self.label_invalid_line.setText("Passwords do not match.")
         else:
-            # Perform signup logic or connect to the database here
             try:
-                self.db_manager.register_user(user, password)
+                db_manager = DatabaseManager()
+                db_manager.register_user(user, password)
                 self.label_invalid_line.setText("Signup successful.")
                 print(f"Signup successful. User: {user}, Hashed Password: {password}")
             except Exception as e:
@@ -113,6 +134,46 @@ class SignupPage(QDialog):
         self.widget.setCurrentIndex(self.widget.currentIndex() - 2)
 
 
+class MainWindow(QMainWindow):
+    def __init__(self, widget):
+        super(MainWindow, self).__init__()
+        loadUi("main_window.ui", self)
+        self.widget = widget
+        self.load_symptoms()
+
+    def clean_symptom_name(self, name):
+        # Remove underscores and capitalize the first letter
+        return name.replace("_", " ").capitalize()
+
+    def load_symptoms(self):
+        symptom_file = "Symptom-severity.csv"
+
+        # Create a widget to hold checkboxes
+        widget = QWidget(self.scrollArea)
+        layout = QVBoxLayout(widget)
+
+        try:
+            with open(symptom_file, newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                symptoms = [self.clean_symptom_name(row['Symptom']) for row in reader]
+
+                # Sort symptoms alphabetically
+                symptoms.sort()
+
+                for symptom in symptoms:
+                    checkbox = QCheckBox(symptom)
+
+                    # Set font and remove background
+                    checkbox.setStyleSheet("QCheckBox { background-color: none; }")
+                    checkbox.setFont(QFont("Century Gothic", 11))
+
+                    layout.addWidget(checkbox)
+
+        except FileNotFoundError:
+            print(f"File {symptom_file} not found.")
+
+        self.scrollArea.setWidget(widget)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = QStackedWidget()
@@ -125,8 +186,8 @@ if __name__ == "__main__":
     widget.addWidget(login)
     widget.addWidget(signup)
 
-    widget.setFixedWidth(800)
-    widget.setFixedHeight(600)
+    widget.setFixedWidth(1000)
+    widget.setFixedHeight(800)
     widget.show()
 
     sys.exit(app.exec_())

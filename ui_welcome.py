@@ -15,40 +15,37 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(800, 600)
-        self.WelcomeWidget = QtWidgets.QWidget(Dialog)
-        self.WelcomeWidget.setGeometry(QtCore.QRect(0, 0, 800, 600))
-        self.WelcomeWidget.setStyleSheet("QWidget#WelcomeWidget{\n"
+        Dialog.setStyleSheet("QDialog{\n"
 "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(46, 117, 100, 255), stop:1 rgba(102, 221, 190, 255))}")
-        self.WelcomeWidget.setObjectName("WelcomeWidget")
-        self.label = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label.setGeometry(QtCore.QRect(240, 40, 320, 91))
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setGeometry(QtCore.QRect(240, 120, 320, 91))
         self.label.setStyleSheet("font: 36pt \"Century Gothic\";\n"
 "color: rgb(229, 232, 236);\n"
 "")
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self.WelcomeWidget)
-        self.label_2.setGeometry(QtCore.QRect(180, 210, 431, 50))
-        self.label_2.setStyleSheet("font: 20pt \"Century Gothic\";\n"
-"color: rgb(229, 232, 236);")
-        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_2.setObjectName("label_2")
-        self.login = QtWidgets.QPushButton(self.WelcomeWidget)
-        self.login.setGeometry(QtCore.QRect(130, 360, 231, 41))
-        self.login.setStyleSheet("border-radius:10px;\n"
-"background-color: rgb(229, 232, 236);\n"
-"\n"
-"font: 14pt \"Century Gothic\";\n"
-"")
-        self.login.setObjectName("login")
-        self.signup = QtWidgets.QPushButton(self.WelcomeWidget)
-        self.signup.setGeometry(QtCore.QRect(430, 360, 231, 41))
+        self.signup = QtWidgets.QPushButton(Dialog)
+        self.signup.setGeometry(QtCore.QRect(430, 440, 231, 41))
         self.signup.setStyleSheet("border-radius:10px;\n"
 "background-color: rgb(229, 232, 236);\n"
 "\n"
 "font: 14pt \"Century Gothic\";\n"
 "")
         self.signup.setObjectName("signup")
+        self.login = QtWidgets.QPushButton(Dialog)
+        self.login.setGeometry(QtCore.QRect(130, 440, 231, 41))
+        self.login.setStyleSheet("border-radius:10px;\n"
+"background-color: rgb(229, 232, 236);\n"
+"\n"
+"font: 14pt \"Century Gothic\";\n"
+"")
+        self.login.setObjectName("login")
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(180, 290, 431, 50))
+        self.label_2.setStyleSheet("font: 20pt \"Century Gothic\";\n"
+"color: rgb(229, 232, 236);")
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setObjectName("label_2")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -57,6 +54,6 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label.setText(_translate("Dialog", "Welcome"))
-        self.label_2.setText(_translate("Dialog", "Disease Symptom Prediction"))
-        self.login.setText(_translate("Dialog", "Log In"))
         self.signup.setText(_translate("Dialog", "Sign Up"))
+        self.login.setText(_translate("Dialog", "Log In"))
+        self.label_2.setText(_translate("Dialog", "Disease Symptom Prediction"))
