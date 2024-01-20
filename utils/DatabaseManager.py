@@ -32,6 +32,10 @@ class DatabaseManager:
 
     def register_user(self, email, password):
         try:
+            # Check if the user already exists
+            if self.user_exists(email):
+                raise ValueError("User already exists.")
+
             # Hash the password using bcrypt
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
@@ -49,6 +53,15 @@ class DatabaseManager:
         except Exception as e:
             print(f"Error during registration: {str(e)}")
             raise Exception(f"Error during registration: {str(e)}")
+
+    def user_exists(self, email):
+        # Check if the user already exists in the database
+        with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                             database=self.database) as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT COUNT(*) FROM user WHERE Email = %s', (email,))
+            result = cursor.fetchone()
+            return result[0] > 0
 
     def check_user_credentials(self, email, password):
         # Retrieve hashed password from the database based on email

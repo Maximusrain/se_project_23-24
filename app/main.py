@@ -2,20 +2,17 @@ import csv
 import re
 import sys
 
-import bcrypt
 from PyQt5.QtGui import QFont
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QPushButton, QStackedWidget, QMessageBox, \
+from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QStackedWidget, QMessageBox, \
     QMainWindow, QVBoxLayout, QCheckBox
-from DatabaseManager import DatabaseManager
-from ui_main_window import Ui_MainWindow
+from utils.DatabaseManager import DatabaseManager
 
 
 class WelcomePage(QDialog):
     def __init__(self, widget):
         super(WelcomePage, self).__init__()
-        loadUi("welcome.ui", self)
+        loadUi("ui/welcome.ui", self)
         self.widget = widget
         self.login.clicked.connect(self.go_to_login)
         self.signup.clicked.connect(self.go_to_signup)
@@ -47,7 +44,7 @@ def is_valid_email(email):
 class LoginPage(QDialog):
     def __init__(self, widget):
         super(LoginPage, self).__init__()
-        loadUi("login.ui", self)
+        loadUi("ui/login.ui", self)
         self.widget = widget
         self.PasswordLine.setEchoMode(QLineEdit.Password)
         self.login_btn.clicked.connect(self.loginfunction)
@@ -97,7 +94,7 @@ class LoginPage(QDialog):
 class SignupPage(QDialog):
     def __init__(self, widget):
         super(SignupPage, self).__init__()
-        loadUi("signup.ui", self)
+        loadUi("ui/signup.ui", self)
         self.widget = widget
         self.Password_line.setEchoMode(QLineEdit.Password)
         self.Password_confirm.setEchoMode(QLineEdit.Password)
@@ -137,7 +134,7 @@ class SignupPage(QDialog):
 class MainWindow(QMainWindow):
     def __init__(self, widget):
         super(MainWindow, self).__init__()
-        loadUi("main_window.ui", self)
+        loadUi("ui/main_window.ui", self)
         self.widget = widget
         self.load_symptoms()
 
@@ -146,7 +143,7 @@ class MainWindow(QMainWindow):
         return name.replace("_", " ").capitalize()
 
     def load_symptoms(self):
-        symptom_file = "Symptom-severity.csv"
+        symptom_file = "data/Symptom-severity.csv"
 
         # Create a widget to hold checkboxes
         widget = QWidget(self.scrollArea)
@@ -173,6 +170,7 @@ class MainWindow(QMainWindow):
             print(f"File {symptom_file} not found.")
 
         self.scrollArea.setWidget(widget)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

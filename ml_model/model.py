@@ -11,7 +11,7 @@ from sklearn.utils import shuffle
 from ydata_profiling import ProfileReport
 
 # read and shuffle the dataset
-df = pd.read_csv('dataset.csv')
+df = pd.read_csv('../data/dataset.csv')
 df = shuffle(df, random_state=42)
 df.head()
 
@@ -42,7 +42,7 @@ df = df.fillna(0)
 df.head()
 
 # symptom severity rank
-df1 = pd.read_csv('Symptom-severity.csv')
+df1 = pd.read_csv('../data/Symptom-severity.csv')
 df1['Symptom'] = df1['Symptom'].str.replace('_', ' ')
 df1.head()
 
@@ -91,10 +91,10 @@ rnd_forest.fit(x_train,y_train)
 # #save the random forest model
 # joblib.dump(rfc, "random_forest.joblib")
 
-discrp = pd.read_csv("symptom_Description.csv")
+discrp = pd.read_csv("../data/symptom_Description.csv")
 discrp.head()
 
-ektra7at = pd.read_csv("symptom_precaution.csv")
+ektra7at = pd.read_csv("../data/symptom_precaution.csv")
 ektra7at.head()
 
 loaded_rf = joblib.load("random_forest.joblib")
