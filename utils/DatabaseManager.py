@@ -44,7 +44,7 @@ class DatabaseManager:
             with pymysql.connect(host=self.host, user=self.user, password=self.password,
                                  database=self.database) as conn:
                 cursor = conn.cursor()
-                cursor.execute('INSERT INTO user (UserPassword, Email) VALUES (%s, %s)', (hashed_password, email))
+                cursor.execute('INSERT INTO user(UserPassword, Email) VALUES (%s, %s)', (hashed_password, email))
                 conn.commit()
 
             print(f"User registered successfully. User: {email}")
@@ -101,14 +101,6 @@ class DatabaseManager:
 
     def get_current_user(self, email):
         # Retrieve user information based on email
-        with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
-            cursor = conn.cursor()
-            cursor.execute('SELECT UserID FROM user WHERE Email = %s', (email,))
-            result = cursor.fetchone()
-            return result[0] if result else None
-
-    def get_user_id_by_email(self, email):
-        # Retrieve user ID based on email
         with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
             cursor = conn.cursor()
             cursor.execute('SELECT UserID FROM user WHERE Email = %s', (email,))

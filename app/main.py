@@ -1,14 +1,15 @@
 import csv
 import re
 import sys
-from datetime import datetime
 
+
+from datetime import datetime
 from PyQt5.QtGui import QFont
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QStackedWidget, QMessageBox, \
     QMainWindow, QVBoxLayout, QCheckBox
-from ..utils.DatabaseManager import DatabaseManager
-from ..ml_model.model import predd, loaded_rf
+from utils.DatabaseManager import DatabaseManager
+from ml_model.model import predd, loaded_rf
 
 
 class WelcomePage(QDialog):
