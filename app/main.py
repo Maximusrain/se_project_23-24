@@ -1,12 +1,14 @@
 import csv
 import re
 import sys
+from datetime import datetime
 
 from PyQt5.QtGui import QFont
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QStackedWidget, QMessageBox, \
     QMainWindow, QVBoxLayout, QCheckBox
-from utils.DatabaseManager import DatabaseManager
+from ..utils.DatabaseManager import DatabaseManager
+from ..ml_model.model import predd, loaded_rf
 
 
 class WelcomePage(QDialog):
@@ -134,9 +136,39 @@ class SignupPage(QDialog):
 class MainWindow(QMainWindow):
     def __init__(self, widget):
         super(MainWindow, self).__init__()
+        self.scrollArea = None
+        self.predict_button = None
+        self.result_text_edit = None
         loadUi("ui/main_window.ui", self)
         self.widget = widget
         self.load_symptoms()
+        self.predict_button.clicked.connect(self.on_predict_button_clicked)
+
+    def on_predict_button_clicked(self):
+        # Get the symptoms from the checkboxes
+        selected_symptoms = self.get_selected_symptoms()
+
+        # Get prediction
+        prediction_result = predd(
+            loaded_rf,
+            *selected_symptoms
+        )
+
+        # Display the prediction result in the text window
+        self.result_text_edit.setPlainText(prediction_result)
+
+        # Save the prediction result in the database
+        self.save_to_database(prediction_result)
+
+    def save_to_database(self, prediction_result):
+        db_manager = DatabaseManager()
+
+        # Get the current user (replace 'get_current_user' with the actual method)
+        current_user = db_manager.get_current_user()
+
+        # Save the prediction in the database with user and timestamp
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        db_manager.save_prediction(current_user, prediction_result, timestamp)
 
     def clean_symptom_name(self, name):
         # Remove underscores and capitalize the first letter
