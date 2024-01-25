@@ -8,6 +8,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, f1_score, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
+import joblib
+import os
+
+# Get the absolute path of the ml_model directory
+ml_model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ml_model'))
 
 # read and shuffle the dataset
 df = pd.read_csv('../data/dataset.csv')
@@ -96,7 +101,7 @@ discrp.head()
 ektra7at = pd.read_csv("../data/symptom_precaution.csv")
 ektra7at.head()
 
-loaded_rf = joblib.load("random_forest.joblib")
+loaded_rf = joblib.load(os.path.join(ml_model_path, 'random_forest.joblib'))
 
 
 def predd(x, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16, S17):
@@ -125,7 +130,7 @@ def predd(x, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S
 
 
 sympList = df1["Symptom"].to_list()
-print(sympList)
+print(sympList);
 for index, item in enumerate(sympList):
     print(f"{index}: {item}")
 
