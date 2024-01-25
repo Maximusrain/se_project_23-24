@@ -29,7 +29,23 @@ class DatabaseManager:
                     UNIQUE KEY Email (Email)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
             ''')
+        # Create a table for predictions (PredictionID, UserID, PredictionResult, Timestamp)
+        with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS predictions (
+                        PredictionID INT AUTO_INCREMENT NOT NULL,
+                        UserID INT NOT NULL,
+                        PredictionResult VARCHAR(255) NOT NULL,
+                        Timestamp TIMESTAMP NOT NULL,
+                        PRIMARY KEY (PredictionID),
+                        FOREIGN KEY (UserID) REFERENCES user(UserID)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+            ''')
+
             conn.commit()
+
 
     def register_user(self, email, password):
         try:
