@@ -1,6 +1,7 @@
 import bcrypt
 import pymysql
 
+
 class DatabaseManager:
     def __init__(self, host='localhost', user='root',
                  password='', database='disease_prediction'):
@@ -28,7 +29,23 @@ class DatabaseManager:
                     UNIQUE KEY Email (Email)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
             ''')
+        # Create a table for predictions (PredictionID, UserID, PredictionResult, Timestamp)
+        with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS predictions (
+                        PredictionID INT AUTO_INCREMENT NOT NULL,
+                        UserID INT NOT NULL,
+                        PredictionResult VARCHAR(255) NOT NULL,
+                        Timestamp TIMESTAMP NOT NULL,
+                        PRIMARY KEY (PredictionID),
+                        FOREIGN KEY (UserID) REFERENCES user(UserID)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+            ''')
+
             conn.commit()
+
 
     def register_user(self, email, password):
         try:
@@ -43,7 +60,7 @@ class DatabaseManager:
             with pymysql.connect(host=self.host, user=self.user, password=self.password,
                                  database=self.database) as conn:
                 cursor = conn.cursor()
-                cursor.execute('INSERT INTO user (UserPassword, Email) VALUES (%s, %s)', (hashed_password, email))
+                cursor.execute('INSERT INTO user(UserPassword, Email) VALUES (%s, %s)', (hashed_password, email))
                 conn.commit()
 
             print(f"User registered successfully. User: {email}")
@@ -76,3 +93,32 @@ class DatabaseManager:
                 return bcrypt.checkpw(password.encode('utf-8'), stored_hash)
 
         return False
+
+    def save_prediction(self, current_user, prediction_result, timestamp):
+        try:
+            # Get the user ID based on the current user's email
+            user_id = self.get_user_id_by_email(current_user)
+
+            # Insert the prediction data into the database
+            with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+                cursor = conn.cursor()
+                cursor.execute('INSERT INTO predictions (UserID, PredictionResult, Timestamp) VALUES (%s, %s, %s)',
+                               (user_id, prediction_result, timestamp))
+                conn.commit()
+
+            print(f"Prediction saved successfully for User ID: {user_id}")
+        except pymysql.Error as e:
+            print(f"Database error during prediction saving: {str(e)}")
+            raise pymysql.Error(f"Database error during prediction saving: {str(e)}")
+        except Exception as e:
+            print(f"Error during prediction saving: {str(e)}")
+            raise Exception(f"Error during prediction saving: {str(e)}")
+
+    def get_current_user(self, email):
+        # Retrieve user information based on email
+        with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT UserID FROM user WHERE Email = %s', (email,))
+            result = cursor.fetchone()
+            return result[0] if result else None

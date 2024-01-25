@@ -1,18 +1,31 @@
 import csv
 import re
 import sys
+import os
 
+# Add the parent directory to the Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from datetime import datetime
 from PyQt5.QtGui import QFont
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QLineEdit, QStackedWidget, QMessageBox, \
     QMainWindow, QVBoxLayout, QCheckBox
-from utils.DatabaseManager import DatabaseManager
+from util.DatabaseManager import DatabaseManager
+from ml_model.model import predd, loaded_rf
 
+
+def load_ui(ui_name, instance):
+    ui_file_path = get_ui_file_path(ui_name)
+    loadUi(ui_file_path, instance)
+
+def get_ui_file_path(ui_file_name):
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ui', ui_file_name))
 
 class WelcomePage(QDialog):
     def __init__(self, widget):
         super(WelcomePage, self).__init__()
-        loadUi("ui/welcome.ui", self)
+        load_ui("welcome.ui", self)
         self.widget = widget
         self.login.clicked.connect(self.go_to_login)
         self.signup.clicked.connect(self.go_to_signup)
@@ -44,7 +57,7 @@ def is_valid_email(email):
 class LoginPage(QDialog):
     def __init__(self, widget):
         super(LoginPage, self).__init__()
-        loadUi("ui/login.ui", self)
+        load_ui("login.ui", self)
         self.widget = widget
         self.PasswordLine.setEchoMode(QLineEdit.Password)
         self.login_btn.clicked.connect(self.loginfunction)
@@ -94,7 +107,7 @@ class LoginPage(QDialog):
 class SignupPage(QDialog):
     def __init__(self, widget):
         super(SignupPage, self).__init__()
-        loadUi("ui/signup.ui", self)
+        load_ui("signup.ui", self)
         self.widget = widget
         self.Password_line.setEchoMode(QLineEdit.Password)
         self.Password_confirm.setEchoMode(QLineEdit.Password)
@@ -134,9 +147,39 @@ class SignupPage(QDialog):
 class MainWindow(QMainWindow):
     def __init__(self, widget):
         super(MainWindow, self).__init__()
-        loadUi("ui/main_window.ui", self)
+        self.scrollArea = None
+        self.predict_button = None
+        self.result_text_edit = None
+        load_ui("main_window.ui", self)
         self.widget = widget
         self.load_symptoms()
+        self.predict_button.clicked.connect(self.on_predict_button_clicked)
+
+    def on_predict_button_clicked(self):
+        # Get the symptoms from the checkboxes
+        selected_symptoms = self.get_selected_symptoms()
+
+        # Get prediction
+        prediction_result = predd(
+            loaded_rf,
+            *selected_symptoms
+        )
+
+        # Display the prediction result in the text window
+        self.result_text_edit.setPlainText(prediction_result)
+
+        # Save the prediction result in the database
+        self.save_to_database(prediction_result)
+
+    def save_to_database(self, prediction_result):
+        db_manager = DatabaseManager()
+
+        # Get the current user (replace 'get_current_user' with the actual method)
+        current_user = db_manager.get_current_user()
+
+        # Save the prediction in the database with user and timestamp
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        db_manager.save_prediction(current_user, prediction_result, timestamp)
 
     def clean_symptom_name(self, name):
         # Remove underscores and capitalize the first letter
