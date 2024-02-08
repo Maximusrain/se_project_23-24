@@ -1,8 +1,9 @@
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QLineEdit
+
 from utils.DatabaseManager import DatabaseManager
-from main_window import MainWindow
 from welcome_window import is_valid_email
+from main_window import MainWindow
 class LoginPage(QDialog):
     def __init__(self, widget):
         super(LoginPage, self).__init__()

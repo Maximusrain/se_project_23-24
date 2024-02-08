@@ -93,8 +93,8 @@ class MainWindow(QMainWindow):
                 print("Model Loaded:", self.model)
                 # Perform prediction using the loaded model
                 predicted_disease = self.model.predict([padded_weights])[0]
-                disease_recommendation = self.recommendation[self.recommendation['Disease'] == predicted_disease[0]]
-                disease_description = self.description[self.description['Disease'] == predicted_disease[0]]
+                disease_description = self.description[self.description['Disease'] == predicted_disease]
+                print(disease_description)
                 disease_description = disease_description.values[0][1]
                 print("Predicted Disease:", predicted_disease)
 
