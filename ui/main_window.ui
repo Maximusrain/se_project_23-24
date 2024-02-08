@@ -121,7 +121,8 @@ QPushButton:pressed {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: transparent;</string>
+     <string notr="true">background-color: transparent;
+font: 14pt &quot;Century Gothic&quot;;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
