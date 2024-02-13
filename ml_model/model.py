@@ -77,21 +77,21 @@ labels = df['Disease'].values
 x_train, x_test, y_train, y_test = train_test_split(data, labels, train_size=0.8, random_state=42)
 # print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
 
-# #random forest model
-#rfc = RandomForestClassifier(random_state=42)
-# rnd_forest = RandomForestClassifier(random_state=42, max_features='sqrt', n_estimators=500, max_depth=13)
-# rnd_forest.fit(x_train, y_train)
-# preds = rnd_forest.predict(x_test)
-# print(x_test[0])
-# print(preds[0])
-# conf_mat = confusion_matrix(y_test, preds)
-# df_cm = pd.DataFrame(conf_mat, index=df['Disease'].unique(), columns=df['Disease'].unique())
-# print('F1-score% =', f1_score(y_test, preds, average='macro') * 100, '|', 'Accuracy% =',
-#       accuracy_score(y_test, preds) * 100)
-# sns.heatmap(df_cm)
-# # save the random forest model
-# joblib.dump(rnd_forest, "random_forest.joblib")
-#
+#random forest model
+rfc = RandomForestClassifier(random_state=42)
+rnd_forest = RandomForestClassifier(random_state=42, max_features='sqrt', n_estimators=500, max_depth=13)
+rnd_forest.fit(x_train, y_train)
+preds = rnd_forest.predict(x_test)
+print(x_test[0])
+print(preds[0])
+conf_mat = confusion_matrix(y_test, preds)
+df_cm = pd.DataFrame(conf_mat, index=df['Disease'].unique(), columns=df['Disease'].unique())
+print('F1-score% =', f1_score(y_test, preds, average='macro') * 100, '|', 'Accuracy% =',
+      accuracy_score(y_test, preds) * 100)
+sns.heatmap(df_cm)
+# save the random forest model
+joblib.dump(rnd_forest, "random_forest.joblib")
+
 discrp = pd.read_csv("../data/symptom_Description.csv")
 discrp.head()
 

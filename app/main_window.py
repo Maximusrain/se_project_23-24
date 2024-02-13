@@ -12,6 +12,7 @@ class MainWindow(QMainWindow):
         loadUi("ui/main_window.ui", self)
         self.widget = widget
         self.pushButton.clicked.connect(self.predict_disease)
+        self.pushButton_2.clicked.connect(self.uncheck_all_checkboxes)
         self.model = load("ml_model/random_forest.joblib")  # Load the trained model
 
         # Load the symptom-severity data
@@ -71,11 +72,23 @@ class MainWindow(QMainWindow):
         try:
             # Gather the checked symptoms
             checked_symptoms = []
+            num_checked = 0
             for checkbox in self.scrollAreaWidgetContents.findChildren(QCheckBox):
                 if checkbox.isChecked():
                     checked_symptoms.append(checkbox.text().lower())  # Make symptoms lowercase
+                    num_checked += 1
 
             print("Checked Symptoms:", checked_symptoms)
+
+            if num_checked < 2:
+                QMessageBox.warning(self, "Not enough symptoms selected",
+                                    "Please select at least two symptoms before predicting.")
+                return
+
+            elif num_checked > 17:
+                QMessageBox.warning(self, "Too many symptoms selected",
+                                    "Please select up to 17 symptoms before predicting.")
+                return
 
             # Map symptoms to their weights from the symptom_index_map dictionary
             weights = [self.symptom_weight_map[symptom] if symptom in self.symptom_weight_map else 0 for symptom in
@@ -93,13 +106,12 @@ class MainWindow(QMainWindow):
                 print("Model Loaded:", self.model)
                 # Perform prediction using the loaded model
                 predicted_disease = self.model.predict([padded_weights])[0]
+                print(predicted_disease)
                 disease_description = self.description[self.description['Disease'] == predicted_disease]
-                print(disease_description)
                 disease_description = disease_description.values[0][1]
-                print("Predicted Disease:", predicted_disease)
 
                 # Display the prediction in the text browser
-                self.textBrowser.setText(f"{predicted_disease} \nDescription: {disease_description}")
+                self.textBrowser.setText(f"{predicted_disease}  \nDescription: {disease_description}")
             else:
                 QMessageBox.warning(self, "No Symptoms Selected",
                                     "Please select at least one symptom before predicting.")
@@ -107,3 +119,9 @@ class MainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "Prediction Error", f"An error occurred during prediction: {str(e)}")
             print(f"Prediction Error: {str(e)}")
+
+    def uncheck_all_checkboxes(self):
+        # Iterate over all the checkboxes and uncheck them
+        for checkbox in self.scrollAreaWidgetContents.findChildren(QCheckBox):
+            checkbox.setChecked(False)
+        self.textBrowser.clear()

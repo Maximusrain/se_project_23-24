@@ -18,7 +18,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(46, 117, 100, 255), stop:1 rgba(102, 221, 190, 255))</string>
+    <string notr="true">background-color: #68c3a3</string>
    </property>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -57,7 +57,6 @@
      <string notr="true">QScrollArea {
     font-size: 11pt;
 	font-family: &quot;Century Gothic&quot;;
-	background-color: #A2D9CE;
 }
 </string>
     </property>
@@ -147,6 +146,39 @@ font: 14pt &quot;Century Gothic&quot;;</string>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>630</y>
+      <width>311</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: #d24d57; /* Green background color */
+    border: 2px solid #af4154; /* Border color */
+    color: #ffffff; /* Text color */
+    padding: 8px 16px; /* Padding */
+    border-radius: 4px; /* Border radius */
+    font-family: &quot;Century Gothic&quot;;
+    font-size: 14pt; /* Font size */
+}
+
+QPushButton:hover {
+    background-color: #f1828d; 
+}
+
+QPushButton:pressed {
+    background-color: #96281b; /* Clicked background color */
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Clear selection</string>
     </property>
    </widget>
   </widget>

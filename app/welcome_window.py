@@ -29,6 +29,6 @@ class WelcomePage(QDialog):
             QMessageBox.critical(self, "Database Error", f"Failed to create database: {str(e)}", QMessageBox.Ok)
 
 def is_valid_email(email):
-    # Email validation using regular expression
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    # Updated email validation using regular expression
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$'
     return re.match(pattern, email) is not None
