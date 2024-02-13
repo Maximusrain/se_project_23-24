@@ -1,3 +1,4 @@
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QLineEdit
 
@@ -5,6 +6,7 @@ from utils.DatabaseManager import DatabaseManager
 from welcome_window import is_valid_email
 from main_window import MainWindow
 class LoginPage(QDialog):
+    logged_in_user_email = None
     def __init__(self, widget):
         super(LoginPage, self).__init__()
         loadUi("ui/login.ui", self)
@@ -28,9 +30,10 @@ class LoginPage(QDialog):
                 if db_manager.check_user_credentials(user, password):
                     self.label_invalid_line.setText("Login successful.")
                     print(f"Login successful. User: {user}")
+                    self.logged_in_user_email = user
 
                     # Access the main window's central widget and switch content
-                    main_window = MainWindow(self.widget)  # Instantiate your MainWindow class
+                    main_window = MainWindow(self.widget, self.logged_in_user_email)  # Instantiate your MainWindow class
                     self.widget.addWidget(main_window)
 
                     # Ensure the index is correct for MainWindow

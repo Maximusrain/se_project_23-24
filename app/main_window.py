@@ -6,8 +6,11 @@ from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QWidget, QMessageBox, QMainWindow, QVBoxLayout, QCheckBox
 from utils.DatabaseManager import DatabaseManager
 
+
 class MainWindow(QMainWindow):
-    def __init__(self, widget):
+    def __init__(self, widget, user):
+        self.db_manager = DatabaseManager()
+        self.logged_in_user_email = user
         super(MainWindow, self).__init__()
         loadUi("ui/main_window.ui", self)
         self.widget = widget
@@ -33,6 +36,7 @@ class MainWindow(QMainWindow):
             self.symptom_weight_map[symptom] = weight
 
         self.load_symptoms()
+        self.tabWidget.currentChanged.connect(self.tab_changed)
 
     def clean_symptom_name(self, name):
         # Remove underscores and capitalize the first letter
@@ -112,6 +116,11 @@ class MainWindow(QMainWindow):
 
                 # Display the prediction in the text browser
                 self.textBrowser.setText(f"{predicted_disease}  \nDescription: {disease_description}")
+                # Add the prediction to the database
+                try:
+                    self.db_manager.add_prediction(self.logged_in_user_email, predicted_disease)
+                except Exception as e:
+                    print(f"Error adding prediction to database: {str(e)}")
             else:
                 QMessageBox.warning(self, "No Symptoms Selected",
                                     "Please select at least one symptom before predicting.")
@@ -125,3 +134,27 @@ class MainWindow(QMainWindow):
         for checkbox in self.scrollAreaWidgetContents.findChildren(QCheckBox):
             checkbox.setChecked(False)
         self.textBrowser.clear()
+
+    def tab_changed(self, index):
+        print("Tab changed to index:", index)  # Add this line for debugging
+        # Check if the account tab is clicked (assuming it's at index 1)
+        if index == 1:
+            print("Tab index:", index)
+            # Set the text of user_name_label to logged_in_user_email
+            print("User:", self.logged_in_user_email)
+            self.user_name_label.setText(self.logged_in_user_email)
+            self.populate_prediction_list()
+
+    def populate_prediction_list(self):
+        # Clear the listWidget
+        self.listWidget.clear()
+
+        # Fetch predictions for the logged-in user
+        predictions = self.db_manager.get_user_predictions(self.logged_in_user_email)
+
+        # Populate the listWidget with predictions
+        for prediction in predictions:
+            disease = prediction[0]
+            timestamp = prediction[1].strftime("%Y-%m-%d %H:%M")  # Format timestamp
+            item_text = f"{disease} - {timestamp}"
+            self.listWidget.addItem(item_text)

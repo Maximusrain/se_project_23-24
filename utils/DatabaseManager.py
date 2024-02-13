@@ -15,7 +15,7 @@ class DatabaseManager:
             cursor = conn.cursor()
             cursor.execute(f'CREATE DATABASE IF NOT EXISTS {self.database}')
 
-    def create_table(self):
+    def create_user_table(self):
         # Create a table for user data (UserID, UserPassword, Email)
         with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
             cursor = conn.cursor()
@@ -29,6 +29,57 @@ class DatabaseManager:
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
             ''')
             conn.commit()
+
+    def create_prediction_table(self):
+        # Method to create a table for predictions (PredictionID, UserID, Disease, Timestamp)
+        with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS prediction (
+                    PredictionID INT AUTO_INCREMENT NOT NULL,
+                    UserID INT NOT NULL,
+                    Disease VARCHAR(255) NOT NULL,
+                    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    PRIMARY KEY (PredictionID),
+                    FOREIGN KEY (UserID) REFERENCES user(UserID) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+            ''')
+            conn.commit()
+
+    def add_prediction(self, user_name, disease_name):
+        try:
+            with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+                cursor = conn.cursor()
+                # Insert a new prediction into the prediction table
+                cursor.execute('''
+                    INSERT INTO prediction (UserID, Disease, Timestamp)
+                    SELECT UserID, %s, CURRENT_TIMESTAMP
+                    FROM user
+                    WHERE Email = %s
+                ''', (disease_name, user_name))
+                conn.commit()
+                print("Prediction added successfully.")
+        except pymysql.Error as e:
+            print(f"Error adding prediction: {str(e)}")
+
+    def get_user_predictions(self, user_name):
+        try:
+            with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+                cursor = conn.cursor()
+                # Retrieve predictions for the user
+                cursor.execute('''
+                    SELECT p.Disease, p.Timestamp
+                    FROM prediction p
+                    INNER JOIN user u ON p.UserID = u.UserID
+                    WHERE u.Email = %s
+                ''', (user_name,))
+                predictions = cursor.fetchall()
+                return predictions
+        except pymysql.Error as e:
+            print(f"Error fetching predictions: {str(e)}")
+            return []
 
     def register_user(self, email, password):
         try:

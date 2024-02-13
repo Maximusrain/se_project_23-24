@@ -23,7 +23,8 @@ class WelcomePage(QDialog):
         try:
             # Attempt to create the database and the user table
             db_manager.create_database()
-            db_manager.create_table()
+            db_manager.create_user_table()
+            db_manager.create_prediction_table()
         except Exception as e:
             # Display an error message if something goes wrong
             QMessageBox.critical(self, "Database Error", f"Failed to create database: {str(e)}", QMessageBox.Ok)
