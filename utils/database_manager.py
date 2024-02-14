@@ -1,3 +1,5 @@
+import csv
+
 import bcrypt
 import pymysql
 
@@ -143,3 +145,23 @@ class DatabaseManager:
                 return bcrypt.checkpw(password.encode('utf-8'), stored_hash)
 
         return False
+
+    def get_recommendations(self, disease):
+        try:
+            # Read recommendations from the CSV file
+            with open('data/symptom_precaution.csv', newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    if row['Disease'] == disease:
+                        # Extract recommendations for the specified disease
+                        recommendations = []
+                        for i in range(1, 5):
+                            precaution_key = f'Precaution_{i}'
+                            precaution = row.get(precaution_key)
+                            if precaution:
+                                precaution = precaution.capitalize()
+                                recommendations.append(precaution)
+                        return recommendations
+        except Exception as e:
+            print(f"Error reading recommendations: {str(e)}")
+            return []

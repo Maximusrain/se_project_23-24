@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch, call
 import pymysql
-from utils.DatabaseManager import DatabaseManager  # Import your DatabaseManager class from your module
+from utils.database_manager import DatabaseManager  # Import your DatabaseManager class from your module
 
 class TestDatabaseManager(unittest.TestCase):
     def setUp(self):

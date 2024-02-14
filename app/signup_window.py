@@ -1,6 +1,6 @@
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QLineEdit
-from utils.DatabaseManager import DatabaseManager
+from utils.database_manager import DatabaseManager
 from welcome_window import is_valid_email
 
 class SignupPage(QDialog):

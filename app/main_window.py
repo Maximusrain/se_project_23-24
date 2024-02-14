@@ -1,15 +1,14 @@
 import csv
-from functools import partial
 
 import pandas as pd
-from PyQt5.QtCore import Qt
-from joblib import load
 from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget, QMessageBox, QMainWindow, QVBoxLayout, QCheckBox, QListWidgetItem
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QWidget, QMessageBox, QMainWindow, QVBoxLayout, QCheckBox, QListWidgetItem, QPushButton, \
-    QHBoxLayout, QLabel, QFrame
-from utils.DatabaseManager import DatabaseManager
+from joblib import load
+
 from ui.prediction_widget_item import PredictionWidgetItem
+from utils.database_manager import DatabaseManager
+
 
 class MainWindow(QMainWindow):
     def __init__(self, widget, user):
@@ -118,8 +117,12 @@ class MainWindow(QMainWindow):
                 disease_description = self.description[self.description['Disease'] == predicted_disease]
                 disease_description = disease_description.values[0][1]
 
-                # Display the prediction in the text browser
-                self.textBrowser.setText(f"{predicted_disease}  \nDescription: {disease_description}")
+                recommendations = self.db_manager.get_recommendations(predicted_disease)
+                # Format the recommendations as a numbered list
+                formatted_recommendations = '\n'.join(
+                    [f"{i + 1}. {recommendation}" for i, recommendation in enumerate(recommendations)])
+                # Display the prediction and recommendations in the text browser
+                self.textBrowser.setText(f"{predicted_disease}\n\nDescription:\n{disease_description}\n\nRecommendations:\n{formatted_recommendations}")
                 # Add the prediction to the database
                 try:
                     self.db_manager.add_prediction(self.logged_in_user_email, predicted_disease, checked_symptoms)

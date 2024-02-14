@@ -1,7 +1,7 @@
 import re
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QMessageBox
-from utils.DatabaseManager import DatabaseManager
+from utils.database_manager import DatabaseManager
 
 class WelcomePage(QDialog):
     def __init__(self, widget):

@@ -1,10 +1,17 @@
+import csv
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLabel, QFrame, QPushButton, QMenu, QAction, QMessageBox
+from PyQt5.QtWidgets import QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QMenu, QAction
+
+from ui.recommendation_dialog import RecommendationDialog
+from utils.database_manager import DatabaseManager
 
 
 class PredictionWidgetItem(QWidget):
     def __init__(self, prediction_id, prediction_text, prediction_symptoms, prediction_time, delete_callback, parent=None):
         super().__init__(parent)
+        self.db_manager = DatabaseManager()
         try:
             self.prediction_id = prediction_id  # Store the prediction ID
             layout = QHBoxLayout()
@@ -19,7 +26,7 @@ class PredictionWidgetItem(QWidget):
             prediction_layout.addWidget(self.prediction_text_label)
 
             # Prediction symptoms label
-            self.prediction_symptoms_label = QLabel(f"Symptoms: {prediction_symptoms}")
+            self.prediction_symptoms_label = QLabel(f"Symptoms: {prediction_symptoms.replace(',', ', ')}")
             self.prediction_symptoms_label.setContentsMargins(0, 0, 0, 10)  # No bottom margin
             prediction_layout.addWidget(self.prediction_symptoms_label)
 
@@ -73,17 +80,28 @@ class PredictionWidgetItem(QWidget):
         return self.prediction_id
 
     def show_context_menu(self, pos):
+        # Get the prediction text from the label
+        prediction_disease = self.prediction_text_label.text()
+        recommendation_text = self.db_manager.get_recommendations(prediction_disease)
+
         menu = QMenu(self)
         display_recommendation_action = QAction("Display Recommendation", self)
-        display_recommendation_action.triggered.connect(self.display_recommendation)
+        display_recommendation_action.triggered.connect(lambda: self.display_recommendation_dialog(recommendation_text))
         menu.addAction(display_recommendation_action)
 
         # Set background color of context menu
-        menu.setStyleSheet("background-color: #81cfe0;")
+        menu.setStyleSheet("background-color: #a5d9c7;")
 
         menu.exec_(self.mapToGlobal(pos))
 
-    def display_recommendation(self):
-        # Show recommendation dialog
-        recommendation_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        QMessageBox.information(self, "Recommendation", recommendation_text)
+    def display_recommendation_dialog(self, recommendations):
+        try:
+            # Format the recommendations into a numbered list
+            recommendation_text = '\n'.join(
+                [f"{i + 1}. {recommendation}." for i, recommendation in enumerate(recommendations)])
+
+            # Display the recommendation dialog with the formatted text
+            dialog = RecommendationDialog(recommendation_text, self)
+            dialog.exec_()
+        except Exception as e:
+            print(f"Error displaying recommendation dialog: {str(e)}")

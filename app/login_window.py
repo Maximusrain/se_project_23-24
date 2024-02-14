@@ -1,10 +1,11 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QDialog, QLineEdit
+from PyQt5.uic import loadUi
 
-from utils.DatabaseManager import DatabaseManager
-from welcome_window import is_valid_email
 from main_window import MainWindow
+from utils.database_manager import DatabaseManager
+from welcome_window import is_valid_email
+
+
 class LoginPage(QDialog):
     logged_in_user_email = None
     def __init__(self, widget):
