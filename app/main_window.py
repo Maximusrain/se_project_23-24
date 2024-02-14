@@ -1,11 +1,15 @@
 import csv
+from functools import partial
+
 import pandas as pd
+from PyQt5.QtCore import Qt
 from joblib import load
 from PyQt5.QtGui import QFont
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QWidget, QMessageBox, QMainWindow, QVBoxLayout, QCheckBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QMainWindow, QVBoxLayout, QCheckBox, QListWidgetItem, QPushButton, \
+    QHBoxLayout, QLabel, QFrame
 from utils.DatabaseManager import DatabaseManager
-
+from ui.prediction_widget_item import PredictionWidgetItem
 
 class MainWindow(QMainWindow):
     def __init__(self, widget, user):
@@ -118,7 +122,7 @@ class MainWindow(QMainWindow):
                 self.textBrowser.setText(f"{predicted_disease}  \nDescription: {disease_description}")
                 # Add the prediction to the database
                 try:
-                    self.db_manager.add_prediction(self.logged_in_user_email, predicted_disease)
+                    self.db_manager.add_prediction(self.logged_in_user_email, predicted_disease, checked_symptoms)
                 except Exception as e:
                     print(f"Error adding prediction to database: {str(e)}")
             else:
@@ -143,18 +147,42 @@ class MainWindow(QMainWindow):
             # Set the text of user_name_label to logged_in_user_email
             print("User:", self.logged_in_user_email)
             self.user_name_label.setText(self.logged_in_user_email)
-            self.populate_prediction_list()
+            predictions = self.db_manager.get_user_predictions(self.logged_in_user_email)
+            try:
+                self.populate_list_widget(predictions)
+            except Exception as e:
+                print(str(e))
 
-    def populate_prediction_list(self):
-        # Clear the listWidget
+    def populate_list_widget(self, predictions):
         self.listWidget.clear()
-
-        # Fetch predictions for the logged-in user
-        predictions = self.db_manager.get_user_predictions(self.logged_in_user_email)
-
-        # Populate the listWidget with predictions
         for prediction in predictions:
-            disease = prediction[0]
-            timestamp = prediction[1].strftime("%Y-%m-%d %H:%M")  # Format timestamp
-            item_text = f"{disease} - {timestamp}"
-            self.listWidget.addItem(item_text)
+            prediction_id, prediction_text, prediction_symptoms, prediction_time = prediction[0], prediction[1], prediction[2], prediction[3]
+            print(prediction_id, prediction_text, prediction_time)
+            # Create an instance of PredictionWidgetItem
+            prediction_item = PredictionWidgetItem(prediction_id, prediction_text, prediction_symptoms, prediction_time, self.delete_prediction)
+            # Create a QListWidgetItem and set the PredictionWidgetItem instance as its widget
+            list_item = QListWidgetItem(self.listWidget)
+            list_item.setSizeHint(prediction_item.sizeHint())
+            self.listWidget.addItem(list_item)
+            self.listWidget.setItemWidget(list_item, prediction_item)
+
+    def delete_prediction(self, prediction_id):
+        print("prediction_id")
+        print(prediction_id)
+        try:
+            # Show confirmation dialog
+            reply = QMessageBox.question(self, 'Confirmation', 'Are you sure you want to delete this prediction?',
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                for i in range(self.listWidget.count()):
+                    item = self.listWidget.item(i)
+                    widget = self.listWidget.itemWidget(item)
+                    if isinstance(widget, PredictionWidgetItem):
+                        if widget.get_prediction_id() == prediction_id:
+                            self.listWidget.takeItem(i)
+                            break
+                self.db_manager.delete_prediction_by_id(prediction_id)
+                print("Prediction id: ", prediction_id, " deleted")
+        except Exception as e:
+            print(str(e))

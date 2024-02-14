@@ -1,6 +1,7 @@
 import bcrypt
 import pymysql
 
+
 class DatabaseManager:
     def __init__(self, host='localhost', user='root',
                  password='', database='disease_prediction'):
@@ -31,7 +32,7 @@ class DatabaseManager:
             conn.commit()
 
     def create_prediction_table(self):
-        # Method to create a table for predictions (PredictionID, UserID, Disease, Timestamp)
+        # Method to create a table for predictions (PredictionID, UserID, Disease, Timestamp, Symptoms)
         with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
             cursor = conn.cursor()
             cursor.execute('''
@@ -39,6 +40,7 @@ class DatabaseManager:
                     PredictionID INT AUTO_INCREMENT NOT NULL,
                     UserID INT NOT NULL,
                     Disease VARCHAR(255) NOT NULL,
+                    Symptoms TEXT,
                     Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     PRIMARY KEY (PredictionID),
                     FOREIGN KEY (UserID) REFERENCES user(UserID) ON DELETE CASCADE
@@ -46,18 +48,20 @@ class DatabaseManager:
             ''')
             conn.commit()
 
-    def add_prediction(self, user_name, disease_name):
+    def add_prediction(self, user_name, disease_name, symptoms):
         try:
             with pymysql.connect(host=self.host, user=self.user, password=self.password,
                                  database=self.database) as conn:
                 cursor = conn.cursor()
+                # Convert the list of symptoms into a string
+                symptoms_str = ','.join(symptoms)
                 # Insert a new prediction into the prediction table
                 cursor.execute('''
-                    INSERT INTO prediction (UserID, Disease, Timestamp)
-                    SELECT UserID, %s, CURRENT_TIMESTAMP
+                    INSERT INTO prediction (UserID, Disease, Symptoms, Timestamp)
+                    SELECT UserID, %s, %s, CURRENT_TIMESTAMP
                     FROM user
                     WHERE Email = %s
-                ''', (disease_name, user_name))
+                ''', (disease_name, symptoms_str, user_name))
                 conn.commit()
                 print("Prediction added successfully.")
         except pymysql.Error as e:
@@ -70,7 +74,7 @@ class DatabaseManager:
                 cursor = conn.cursor()
                 # Retrieve predictions for the user
                 cursor.execute('''
-                    SELECT p.Disease, p.Timestamp
+                    SELECT p.PredictionID, p.Disease, p.Symptoms, p.Timestamp
                     FROM prediction p
                     INNER JOIN user u ON p.UserID = u.UserID
                     WHERE u.Email = %s
@@ -80,6 +84,18 @@ class DatabaseManager:
         except pymysql.Error as e:
             print(f"Error fetching predictions: {str(e)}")
             return []
+
+    def delete_prediction_by_id(self, prediction_id):
+        try:
+            with pymysql.connect(host=self.host, user=self.user, password=self.password,
+                                 database=self.database) as conn:
+                cursor = conn.cursor()
+                # Delete the prediction from the prediction table based on its ID
+                cursor.execute('DELETE FROM prediction WHERE PredictionID = %s', (prediction_id,))
+                conn.commit()
+                print("Prediction deleted successfully.")
+        except pymysql.Error as e:
+            print(f"Error deleting prediction: {str(e)}")
 
     def register_user(self, email, password):
         try:
