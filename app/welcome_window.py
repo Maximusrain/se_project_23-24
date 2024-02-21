@@ -6,7 +6,7 @@ from utils.database_manager import DatabaseManager
 class WelcomePage(QDialog):
     def __init__(self, widget):
         super(WelcomePage, self).__init__()
-        loadUi("ui/welcome.ui", self)
+        loadUi("../ui/welcome.ui", self)
         self.widget = widget
         self.login.clicked.connect(self.go_to_login)
         self.signup.clicked.connect(self.go_to_signup)

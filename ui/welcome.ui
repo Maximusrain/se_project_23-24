@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1000</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>120</y>
+     <x>330</x>
+     <y>190</y>
      <width>320</width>
      <height>91</height>
     </rect>
@@ -41,8 +41,8 @@ color: rgb(229, 232, 236);
   <widget class="QPushButton" name="signup">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>440</y>
+     <x>520</x>
+     <y>510</y>
      <width>231</width>
      <height>41</height>
     </rect>
@@ -61,8 +61,8 @@ font: 14pt &quot;Century Gothic&quot;;
   <widget class="QPushButton" name="login">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>440</y>
+     <x>220</x>
+     <y>510</y>
      <width>231</width>
      <height>41</height>
     </rect>
@@ -81,8 +81,8 @@ font: 14pt &quot;Century Gothic&quot;;
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>290</y>
+     <x>270</x>
+     <y>360</y>
      <width>431</width>
      <height>50</height>
     </rect>

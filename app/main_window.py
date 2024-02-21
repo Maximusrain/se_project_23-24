@@ -15,20 +15,20 @@ class MainWindow(QMainWindow):
         self.db_manager = DatabaseManager()
         self.logged_in_user_email = user
         super(MainWindow, self).__init__()
-        loadUi("ui/main_window.ui", self)
+        loadUi("../ui/main_window.ui", self)
         self.widget = widget
         self.pushButton.clicked.connect(self.predict_disease)
         self.pushButton_2.clicked.connect(self.uncheck_all_checkboxes)
-        self.model = load("ml_model/random_forest.joblib")  # Load the trained model
+        self.model = load("../ml_model/random_forest.joblib")  # Load the trained model
 
         # Load the symptom-severity data
-        symptoms = pd.read_csv('data/Symptom-severity.csv')
+        symptoms = pd.read_csv('../data/Symptom-severity.csv')
         symptoms['Symptom'] = symptoms['Symptom'].str.replace('_', ' ')
 
-        self.recommendation = pd.read_csv("data/symptom_precaution.csv")
+        self.recommendation = pd.read_csv("../data/symptom_precaution.csv")
         self.recommendation.head()
 
-        self.description = pd.read_csv("data/symptom_Description.csv")
+        self.description = pd.read_csv("../data/symptom_Description.csv")
         self.description.head()
 
         # Create a dictionary mapping symptom names to their severity weights
@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         return name.replace("_", " ").capitalize()
 
     def load_symptoms(self):
-        symptom_file = "data/Symptom-severity.csv"
+        symptom_file = "../data/Symptom-severity.csv"
 
         # Create a widget to hold checkboxes
         self.scrollAreaWidgetContents = QWidget(self.scrollArea)  # Keep a reference

@@ -88,9 +88,15 @@ conf_mat = confusion_matrix(y_test, preds)
 df_cm = pd.DataFrame(conf_mat, index=df['Disease'].unique(), columns=df['Disease'].unique())
 print('F1-score% =', f1_score(y_test, preds, average='macro') * 100, '|', 'Accuracy% =',
       accuracy_score(y_test, preds) * 100)
-sns.heatmap(df_cm)
+
+plt.figure(figsize=(9, 9))  # Adjust the figure size as needed
+sns.heatmap(df_cm, annot=True, cmap='Blues')
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
 # save the random forest model
-joblib.dump(rnd_forest, "random_forest.joblib")
+#joblib.dump(rnd_forest, "random_forest.joblib")
 
 discrp = pd.read_csv("../data/symptom_Description.csv")
 discrp.head()

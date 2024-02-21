@@ -1,8 +1,8 @@
 import csv
+import sqlite3
 
 import bcrypt
 import pymysql
-
 
 class DatabaseManager:
     def __init__(self, host='localhost', user='root',
@@ -14,7 +14,7 @@ class DatabaseManager:
 
     def create_database(self):
         # Connect to the MySQL server without specifying a database
-        with pymysql.connect(host=self.host, user=self.user, password=self.password) as conn:
+        with pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database) as conn:
             cursor = conn.cursor()
             cursor.execute(f'CREATE DATABASE IF NOT EXISTS {self.database}')
 
@@ -149,7 +149,7 @@ class DatabaseManager:
     def get_recommendations(self, disease):
         try:
             # Read recommendations from the CSV file
-            with open('data/symptom_precaution.csv', newline='') as csvfile:
+            with open('D:\POLSL\SE\DiseaseSymptomPrediction\data\symptom_precaution.csv', newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     if row['Disease'] == disease:

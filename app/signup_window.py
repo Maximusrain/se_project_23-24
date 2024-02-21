@@ -6,7 +6,7 @@ from welcome_window import is_valid_email
 class SignupPage(QDialog):
     def __init__(self, widget):
         super(SignupPage, self).__init__()
-        loadUi("ui/signup.ui", self)
+        loadUi("../ui/signup.ui", self)
         self.widget = widget
         self.Password_line.setEchoMode(QLineEdit.Password)
         self.Password_confirm.setEchoMode(QLineEdit.Password)

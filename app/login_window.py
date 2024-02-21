@@ -10,7 +10,7 @@ class LoginPage(QDialog):
     logged_in_user_email = None
     def __init__(self, widget):
         super(LoginPage, self).__init__()
-        loadUi("ui/login.ui", self)
+        loadUi("../ui/login.ui", self)
         self.widget = widget
         self.PasswordLine.setEchoMode(QLineEdit.Password)
         self.login_btn.clicked.connect(self.loginfunction)
